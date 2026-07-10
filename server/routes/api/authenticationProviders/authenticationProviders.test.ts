@@ -10,7 +10,7 @@ const server = getTestServer();
 beforeEach(setSelfHosted);
 
 function setCloudHosted() {
-  env.URL = sharedEnv.URL = "https://app.getoutline.com";
+  env.URL = sharedEnv.URL = "https://app.getdarin.com";
 }
 
 describe("#authenticationProviders.info", () => {

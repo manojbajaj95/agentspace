@@ -873,7 +873,7 @@ export class Environment {
    * The product name
    */
   @Public
-  public APP_NAME = "AgentSpace";
+  public APP_NAME = "Darin";
 
   /**
    * Gravity constant for time decay in popularity scoring. Higher values cause
@@ -904,13 +904,13 @@ export class Environment {
 
   /**
    * Returns true if the current installation is the cloud hosted version at
-   * getoutline.com
+   * getdarin.com
    */
   public get isCloudHosted() {
     return [
-      "https://app.getoutline.com",
-      "https://app.outline.dev",
-      "https://app.outline.dev:3000",
+      "https://app.getdarin.com",
+      "https://app.darin.dev",
+      "https://app.darin.dev:3000",
     ].includes(this.URL);
   }
 

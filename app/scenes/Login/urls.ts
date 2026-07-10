@@ -1,9 +1,9 @@
 import Desktop from "~/utils/Desktop";
 
-/** The hostname of the default Outline cloud installation. */
-export const DefaultHostname = "app.getoutline.com";
+/** The hostname of the default Darin cloud installation. */
+export const DefaultHostname = "app.getdarin.com";
 
-/** The origin of the default Outline cloud installation. */
+/** The origin of the default Darin cloud installation. */
 export const DefaultHost = `https://${DefaultHostname}`;
 
 function validateAndEncodeSubdomain(subdomain: string): string {
@@ -12,7 +12,7 @@ function validateAndEncodeSubdomain(subdomain: string): string {
   if (!urlPattern.test(encodedSubdomain)) {
     throw new Error("Invalid subdomain");
   }
-  return `https://${encodedSubdomain}.getoutline.com`;
+  return `https://${encodedSubdomain}.getdarin.com`;
 }
 
 /**
@@ -34,7 +34,7 @@ export async function navigateToSubdomain(subdomain: string) {
  * Normalize a user-entered host into an origin URL, defaulting to https.
  *
  * @param input The host entered by the user.
- * @returns the normalized origin (e.g. "https://app.getoutline.com").
+ * @returns the normalized origin (e.g. "https://app.getdarin.com").
  * @throws if the input cannot be parsed into a valid URL.
  */
 export function normalizeHost(input: string): string {
@@ -46,13 +46,13 @@ export function normalizeHost(input: string): string {
 }
 
 /**
- * Check that the given host is a reachable Outline installation by requesting
+ * Check that the given host is a reachable Darin installation by requesting
  * its auth configuration. The request is performed in the desktop main process
  * to bypass renderer CORS restrictions.
  *
  * @param input The host entered by the user.
  * @returns the normalized origin of the validated installation.
- * @throws if the host is unreachable or not an Outline installation.
+ * @throws if the host is unreachable or not a Darin installation.
  */
 export async function validateHost(input: string): Promise<string> {
   const origin = normalizeHost(input);
@@ -63,7 +63,7 @@ export async function validateHost(input: string): Promise<string> {
 
   const config = await Desktop.bridge.loadAuthConfig(origin);
   if (!Array.isArray(config?.providers)) {
-    throw new Error("Host is not an AgentSpace installation");
+    throw new Error("Host is not a Darin installation");
   }
 
   return origin;

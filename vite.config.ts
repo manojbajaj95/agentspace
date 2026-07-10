@@ -93,8 +93,8 @@ export default () =>
           ],
         },
         manifest: {
-          name: "AgentSpace",
-          short_name: "AgentSpace",
+          name: "Darin",
+          short_name: "Darin",
           theme_color: "#fff",
           background_color: "#fff",
           start_url: "/",

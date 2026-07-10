@@ -35,7 +35,7 @@ describe("oauthState", () => {
 
   it("round-trips a signed OAuth state", () => {
     const token = signOAuthState({
-      host: "team.outline.dev",
+      host: "team.darin.dev",
       actorId: "user-id",
       actorSessionHash: "session-hash",
       client: Client.Desktop,
@@ -45,7 +45,7 @@ describe("oauthState", () => {
 
     const payload = verifyOAuthState(token);
 
-    expect(payload.host).toBe("team.outline.dev");
+    expect(payload.host).toBe("team.darin.dev");
     expect(payload.actorId).toBe("user-id");
     expect(payload.actorSessionHash).toBe("session-hash");
     expect(payload.client).toBe(Client.Desktop);
@@ -56,7 +56,7 @@ describe("oauthState", () => {
 
   it("rejects a signed OAuth state as an OAuth intent", () => {
     const token = signOAuthState({
-      host: "team.outline.dev",
+      host: "team.darin.dev",
       actorId: "user-id",
       client: Client.Web,
       nonceHash: hashOAuthStateNonce("csrf-nonce"),
@@ -77,7 +77,7 @@ describe("oauthState", () => {
 
   it("rejects a tampered token", () => {
     const token = signOAuthState({
-      host: "team.outline.dev",
+      host: "team.darin.dev",
       client: Client.Web,
       nonceHash: hashOAuthStateNonce("csrf-nonce"),
     });

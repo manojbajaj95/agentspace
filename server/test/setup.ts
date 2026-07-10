@@ -57,5 +57,5 @@ void pluginModules;
 (PluginManager as unknown as { loaded: boolean }).loaded = true;
 
 beforeEach(() => {
-  env.URL = sharedEnv.URL = "https://app.outline.dev";
+  env.URL = sharedEnv.URL = "https://app.darin.dev";
 });

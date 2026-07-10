@@ -24,7 +24,7 @@ describe("#oauth.register", () => {
         redirect_uris: ["https://example.com/callback"],
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -61,7 +61,7 @@ describe("#oauth.register", () => {
         token_endpoint_auth_method: "client_secret_post",
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -84,7 +84,7 @@ describe("#oauth.register", () => {
         logo_uri: "https://example.com/logo.png",
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -100,7 +100,7 @@ describe("#oauth.register", () => {
         redirect_uris: ["https://example.com/callback"],
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -116,7 +116,7 @@ describe("#oauth.register", () => {
         client_name: "Test Client",
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -130,7 +130,7 @@ describe("#oauth.register", () => {
         redirect_uris: ["not-a-url"],
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -144,7 +144,7 @@ describe("#oauth.register", () => {
         redirect_uris: [],
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -159,7 +159,7 @@ describe("#oauth.register", () => {
         grant_types: ["client_credentials"],
       },
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
 
@@ -175,7 +175,7 @@ describe("#oauth.register", () => {
       },
       headers: {
         // Use an invalid subdomain so that no team is found in the context
-        host: `invalid-${subdomain}.outline.dev`,
+        host: `invalid-${subdomain}.darin.dev`,
       },
     });
 
@@ -199,7 +199,7 @@ async function registerClient(
       ...overrides,
     },
     headers: {
-      host: `${subdomain}.outline.dev`,
+      host: `${subdomain}.darin.dev`,
     },
   });
   return res.json();
@@ -497,7 +497,7 @@ describe("GET /.well-known/oauth-protected-resource", () => {
     });
 
     const res = await server.get("/.well-known/oauth-protected-resource", {
-      headers: { host: `${team.subdomain}.outline.dev` },
+      headers: { host: `${team.subdomain}.darin.dev` },
     });
 
     expect(res.status).toEqual(404);

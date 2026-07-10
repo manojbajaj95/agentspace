@@ -1625,7 +1625,7 @@
   "Disconnecting your personal account will prevent searching for documents from Slack. Are you sure?": "Disconnecting your personal account will prevent searching for documents from Slack. Are you sure?",
   "Slash command": "Slash command",
   "Get rich previews of {{ appName }} links shared in Slack and use the <em>{{ command }}</em> slash command to search for documents without leaving your chat.": "Get rich previews of {{ appName }} links shared in Slack and use the <em>{{ command }}</em> slash command to search for documents without leaving your chat.",
-  "This will remove the AgentSpace slash command from your Slack workspace. Are you sure?": "This will remove the AgentSpace slash command from your Slack workspace. Are you sure?",
+  "This will remove the Darin slash command from your Slack workspace. Are you sure?": "This will remove the Darin slash command from your Slack workspace. Are you sure?",
   "Connect {{appName}} collections to Slack channels. Messages will be automatically posted to Slack when documents are published or updated.": "Connect {{appName}} collections to Slack channels. Messages will be automatically posted to Slack when documents are published or updated.",
   "Comment by {{ author }} on \"{{ title }}\"": "Comment by {{ author }} on \"{{ title }}\"",
   "How to use {{ command }}": "How to use {{ command }}",

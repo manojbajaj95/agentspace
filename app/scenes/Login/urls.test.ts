@@ -2,8 +2,8 @@ import { normalizeHost } from "./urls";
 
 describe("normalizeHost", () => {
   it("defaults to https when no protocol is given", () => {
-    expect(normalizeHost("app.getoutline.com")).toBe(
-      "https://app.getoutline.com"
+    expect(normalizeHost("app.getdarin.com")).toBe(
+      "https://app.getdarin.com"
     );
   });
 
@@ -23,8 +23,8 @@ describe("normalizeHost", () => {
   });
 
   it("trims surrounding whitespace", () => {
-    expect(normalizeHost("  app.getoutline.com  ")).toBe(
-      "https://app.getoutline.com"
+    expect(normalizeHost("  app.getdarin.com  ")).toBe(
+      "https://app.getdarin.com"
     );
   });
 

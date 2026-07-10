@@ -44,7 +44,7 @@ export function BackButton({ onBack, config }: Props) {
   }
 
   return (
-    <Link href={isSubdomain ? env.URL : "https://www.getoutline.com"}>
+    <Link href={isSubdomain ? env.URL : "https://www.getdarin.com"}>
       <BackIcon /> {t("Back to home")}
     </Link>
   );

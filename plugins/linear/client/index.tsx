@@ -11,7 +11,7 @@ PluginManager.add([
       group: "Integrations",
       icon: Icon,
       description:
-        "Connect your Linear account to AgentSpace to enable rich, realtime, issue previews inside documents.",
+        "Connect your Linear account to Darin to enable rich, realtime, issue previews inside documents.",
       component: createLazyComponent(() => import("./Settings")),
     },
   },

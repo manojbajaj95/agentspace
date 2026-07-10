@@ -2,14 +2,14 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./public/logos/outline-logo-dark.png" height="29">
     <source media="(prefers-color-scheme: light)" srcset="./public/logos/outline-logo-light.png" height="29">
-    <img src="./public/logos/outline-logo-light.png" height="29" alt="AgentSpace" />
+    <img src="./public/logos/outline-logo-light.png" height="29" alt="Darin" />
   </picture>
 </p>
 <p align="center">
   <i>A fast, collaborative knowledge base for your team built using React and Node.js.</i>
 </p>
 
-This is the source code that runs **AgentSpace**, a collaborative knowledge base based on [Outline](https://www.getoutline.com).
+This is the source code that runs **Darin**, a collaborative knowledge base based on [Outline](https://www.getoutline.com).
 
 # Installation
 
@@ -26,7 +26,7 @@ please refer to the [architecture document](docs/ARCHITECTURE.md) first for a hi
 
 ## Debugging
 
-In development AgentSpace outputs simple logging to the console, prefixed by categories. In production it outputs JSON logs, these can be easily parsed by your preferred log ingestion pipeline.
+In development Darin outputs simple logging to the console, prefixed by categories. In production it outputs JSON logs, these can be easily parsed by your preferred log ingestion pipeline.
 
 HTTP logging is disabled by default, but can be enabled by setting the `DEBUG=http` environment variable. Logging
 can be enabled for all categories by setting `DEBUG=*` or for specific categories such as `DEBUG=database` and `LOG_LEVEL=debug`, or `LOG_LEVEL=silly` for very verbose logging.

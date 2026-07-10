@@ -47,7 +47,7 @@ function Applications() {
           components={{
             em: (
               <a
-                href="https://www.getoutline.com/developers"
+                href="https://www.getdarin.com/developers"
                 target="_blank"
                 rel="noreferrer"
               />

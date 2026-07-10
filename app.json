@@ -1,9 +1,9 @@
 {
-  "name": "AgentSpace",
+  "name": "Darin",
   "description": "Collaborative knowledge base for growing teams",
-  "website": "https://www.getoutline.com/",
+  "website": "https://www.getdarin.com/",
   "repository": "https://github.com/outline/outline",
-  "keywords": ["wiki", "team", "node", "markdown", "slack", "agentspace"],
+  "keywords": ["wiki", "team", "node", "markdown", "slack", "darin"],
   "success_url": "/",
   "formation": {
     "web": {

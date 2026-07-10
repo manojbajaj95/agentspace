@@ -1,7 +1,7 @@
 import sharedEnv from "../env";
 import parseCollectionSlug from "./parseCollectionSlug";
 
-sharedEnv.URL = "https://app.outline.dev";
+sharedEnv.URL = "https://app.darin.dev";
 
 describe("#parseCollectionSlug", () => {
   it("should work with fully qualified url", () => {

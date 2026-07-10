@@ -16,8 +16,8 @@ describe("#sharedDocumentPath", () => {
 describe("#desktopify", () => {
   it("should replace https protocol with outline://", () => {
     expect(
-      desktopify("/doc/test-DjDlkBi77t", "https://app.getoutline.com")
-    ).toBe("outline://app.getoutline.com/doc/test-DjDlkBi77t");
+      desktopify("/doc/test-DjDlkBi77t", "https://app.getdarin.com")
+    ).toBe("outline://app.getdarin.com/doc/test-DjDlkBi77t");
   });
 
   it("should replace http protocol with outline://", () => {

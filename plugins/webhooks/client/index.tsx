@@ -12,7 +12,7 @@ PluginManager.add([
       after: "Shared Links",
       icon: Icon,
       description:
-        "Automate downstream workflows with real-time JSON POSTs, subscribe to events in AgentSpace so external systems can react instantly.",
+        "Automate downstream workflows with real-time JSON POSTs, subscribe to events in Darin so external systems can react instantly.",
       component: createLazyComponent(() => import("./Settings")),
     },
   },

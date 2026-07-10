@@ -239,7 +239,7 @@ function Login({ children, onBack }: Props) {
               pattern="^[a-z\d-]+$"
               required
             >
-              <Domain>.getoutline.com</Domain>
+              <Domain>.getdarin.com</Domain>
             </Input>
           </Flex>
           <ButtonLarge type="submit" fullwidth>

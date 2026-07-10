@@ -231,7 +231,7 @@ export const downloadApp = createExternalLinkAction({
   iconInContextMenu: false,
   icon: <BrowserIcon />,
   visible: () => !Desktop.isElectron() && isMac && isCloudHosted,
-  url: "https://desktop.getoutline.com",
+  url: "https://desktop.getdarin.com",
   target: "_blank",
 });
 

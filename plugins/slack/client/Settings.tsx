@@ -134,7 +134,7 @@ function Slack() {
                 <ConnectedButton
                   onClick={commandIntegration.delete}
                   confirmationMessage={t(
-                    "This will remove the AgentSpace slash command from your Slack workspace. Are you sure?"
+                    "This will remove the Darin slash command from your Slack workspace. Are you sure?"
                   )}
                 />
               ) : (

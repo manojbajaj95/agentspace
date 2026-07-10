@@ -99,7 +99,7 @@ describe("#auth.config", () => {
     });
     const res = await server.post("/api/auth.config", {
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
     const body = await res.json();
@@ -145,7 +145,7 @@ describe("#auth.config", () => {
     });
     const res = await server.post("/api/auth.config", {
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
     const body = await res.json();
@@ -170,7 +170,7 @@ describe("#auth.config", () => {
     });
     const res = await server.post("/api/auth.config", {
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
     const body = await res.json();
@@ -193,7 +193,7 @@ describe("#auth.config", () => {
     });
     const res = await server.post("/api/auth.config", {
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
     const body = await res.json();
@@ -219,7 +219,7 @@ describe("#auth.config", () => {
     await buildUserPasskey({ userId: user.id });
     const res = await server.post("/api/auth.config", {
       headers: {
-        host: `${subdomain}.outline.dev`,
+        host: `${subdomain}.darin.dev`,
       },
     });
     const body = await res.json();

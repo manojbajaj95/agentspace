@@ -18,7 +18,7 @@ const resolveCname = vi.hoisted(
       callback: (err: Error | null, addresses: string[]) => void
     ) => {
       if (input.includes("valid.custom.domain")) {
-        callback(null, ["secure.outline.dev"]);
+        callback(null, ["secure.darin.dev"]);
         return;
       }
 

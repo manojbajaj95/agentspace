@@ -11,7 +11,7 @@ PluginManager.add([
       group: "Integrations",
       icon: Icon,
       description:
-        "Connect your AgentSpace workspace to Zapier to automate workflows and integrate with thousands of other tools.",
+        "Connect your Darin workspace to Zapier to automate workflows and integrate with thousands of other tools.",
       component: createLazyComponent(() => import("./Settings")),
     },
   },

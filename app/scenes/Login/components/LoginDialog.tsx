@@ -43,7 +43,7 @@ export function LoginDialog() {
           pattern: /^[a-z\d-]{1,63}$/,
         })}
       >
-        <Domain>.getoutline.com</Domain>
+        <Domain>.getdarin.com</Domain>
       </Input>
       <ButtonLarge type="submit" fullwidth>
         {t("Continue")}

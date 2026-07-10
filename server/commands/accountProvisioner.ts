@@ -315,10 +315,9 @@ export async function provisionFirstCollection(
     // For the first collection we go ahead and create some initial documents to get
     // the team started. You can edit these in /server/onboarding/x.md
     const onboardingDocs = [
-      "Integrations & API",
       "Our Editor",
       "Getting Started",
-      "What is AgentSpace",
+      "What is Darin",
     ];
 
     for (const title of onboardingDocs) {

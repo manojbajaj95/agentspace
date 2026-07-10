@@ -8,7 +8,7 @@ type Props = {
 };
 
 /**
- * AgentSpace brand mark (three stacked bars).
+ * Darin brand mark (three stacked bars).
  */
 export default function OutlineIcon({
   size = 24,

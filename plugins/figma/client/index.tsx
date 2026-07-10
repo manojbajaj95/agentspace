@@ -11,7 +11,7 @@ PluginManager.add([
       group: "Integrations",
       icon: Icon,
       description:
-        "Connect your Figma account to AgentSpace to enable rich design file previews inside documents.",
+        "Connect your Figma account to Darin to enable rich design file previews inside documents.",
       component: createLazyComponent(() => import("./Settings")),
     },
   },
