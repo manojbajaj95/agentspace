@@ -1,0 +1,6 @@
+{
+  "id": "ai",
+  "name": "AI",
+  "priority": 50,
+  "description": "Adds Ask AI slash command powered by OpenRouter."
+}

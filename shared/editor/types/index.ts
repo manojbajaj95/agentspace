@@ -36,6 +36,8 @@ export type MenuItem = {
   shortcut?: string;
   keywords?: string;
   tooltip?: string;
+  /** Placeholder shown in the secondary input when this item opens one. */
+  placeholder?: string;
   label?: string;
   dangerous?: boolean;
   /** Higher number is higher in results, default is 0. */

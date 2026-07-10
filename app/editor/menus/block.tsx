@@ -22,6 +22,7 @@ import {
   DoneIcon,
   EmbedIcon,
   CollapseIcon,
+  SparklesIcon,
 } from "outline-icons";
 import * as React from "react";
 import styled from "styled-components";
@@ -280,6 +281,13 @@ export default function blockMenuItems(
       title: "Diagrams.net Diagram",
       icon: <Img src="/images/diagrams.png" alt="Diagrams.net Diagram" />,
       keywords: "diagram flowchart draw.io",
+    },
+    {
+      name: "askAi",
+      title: t("Ask AI"),
+      keywords: "ai ask gpt llm generate openrouter",
+      icon: <SparklesIcon />,
+      placeholder: t("Ask AI…"),
     },
   ];
 

@@ -28,10 +28,28 @@ import {
 import { MouseSafeArea } from "~/components/MouseSafeArea";
 import Scrollable from "~/components/Scrollable";
 import useMobile from "~/hooks/useMobile";
+import { client } from "~/utils/ApiClient";
 import Logger from "~/utils/Logger";
 import { useEditor } from "./EditorContext";
 import Input from "./Input";
 import { MenuHeader } from "~/components/primitives/components/Menu";
+
+/**
+ * Format an Ask AI Q&A as a markdown blockquote.
+ *
+ * @param question the prompt the user entered.
+ * @param answer the markdown answer from the model.
+ * @returns markdown for a quote starting with AskAI: question then the answer.
+ */
+function formatAskAiQuote(question: string, answer: string): string {
+  const quotedAnswer = answer
+    .trim()
+    .split("\n")
+    .map((line) => `> ${line}`)
+    .join("\n");
+
+  return `> AskAI: ${question}\n>\n${quotedAnswer}`;
+}
 
 export type Props<T extends MenuItem = MenuItem> = {
   rtl: boolean;
@@ -178,7 +196,8 @@ function useSuggestionsMenuAria({
 }
 
 function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
-  const { view, commands, props: editorProps } = useEditor();
+  const editor = useEditor();
+  const { view, commands, props: editorProps } = editor;
   const { t } = useTranslation();
   const isMobile = useMobile();
   const pointerRef = React.useRef<{ clientX: number; clientY: number }>({
@@ -378,6 +397,7 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
         case "attachment":
           return triggerFilePick(item.attrs?.accept ?? "*", item.attrs);
         case "embed":
+        case "askAi":
           return triggerLinkInput(item);
         default:
           insertNode(item);
@@ -408,6 +428,38 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
       event.preventDefault();
       event.stopPropagation();
 
+      if (insertItem.name === "askAi") {
+        const prompt = event.currentTarget.value.trim();
+        if (!prompt) {
+          toast.error(t("Please enter a prompt"));
+          return;
+        }
+
+        void (async () => {
+          restoreSelection();
+          handleClearSearch();
+          const documentMarkdown = String(editor.value(true) ?? "");
+          props.onClose();
+
+          const toastId = toast.loading(t("Asking AI…"));
+          try {
+            const res = await client.post<{ data: { markdown: string } }>(
+              "/ai.ask",
+              {
+                prompt,
+                documentMarkdown,
+              }
+            );
+            editor.insertMarkdown(formatAskAiQuote(prompt, res.data.markdown));
+            toast.success(t("AI response inserted"), { id: toastId });
+          } catch (err) {
+            Logger.error("Ask AI failed", err as Error);
+            toast.error(t("Failed to get AI response"), { id: toastId });
+          }
+        })();
+        return;
+      }
+
       const href = event.currentTarget.value;
       const matches = "matcher" in insertItem && insertItem.matcher(href);
 
@@ -437,6 +489,10 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
       return;
     }
     if (!insertItem) {
+      return;
+    }
+
+    if (insertItem.name === "askAi") {
       return;
     }
 
@@ -586,7 +642,8 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
         item.name &&
         !commands[item.name] &&
         !commands[`create${capitalize(item.name)}`] &&
-        item.name !== "noop"
+        item.name !== "noop" &&
+        item.name !== "askAi"
       ) {
         return false;
       }
@@ -1045,6 +1102,7 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
                 <LinkInputWrapper>
                   <LinkInput
                     type="text"
+                    defaultValue=""
                     placeholder={
                       "placeholder" in insertItem && !!insertItem.placeholder
                         ? insertItem.placeholder
@@ -1103,6 +1161,7 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
             <LinkInputWrapper>
               <LinkInput
                 type="text"
+                defaultValue=""
                 placeholder={
                   "placeholder" in insertItem && !!insertItem.placeholder
                     ? insertItem.placeholder

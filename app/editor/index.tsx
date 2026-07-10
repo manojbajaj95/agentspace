@@ -9,7 +9,7 @@ import { gapCursor } from "prosemirror-gapcursor";
 import type { InputRule } from "prosemirror-inputrules";
 import { keymap } from "prosemirror-keymap";
 import type { NodeSpec, MarkSpec } from "prosemirror-model";
-import { Schema, Node as ProsemirrorNode } from "prosemirror-model";
+import { Schema, Slice, Node as ProsemirrorNode } from "prosemirror-model";
 import type { Plugin, Transaction } from "prosemirror-state";
 import { EditorState, Selection, TextSelection } from "prosemirror-state";
 import type { MarkdownParser } from "prosemirror-markdown";
@@ -31,6 +31,7 @@ import type { CommandFactory, WidgetProps } from "@shared/editor/lib/Extension";
 import type { AnyExtension, AnyExtensionClass } from "@shared/editor/lib/types";
 import ExtensionManager from "@shared/editor/lib/ExtensionManager";
 import { inputRules } from "@shared/editor/lib/inputRules";
+import normalizePastedMarkdown from "@shared/editor/lib/markdown/normalize";
 import type { MarkdownSerializer } from "@shared/editor/lib/markdown/serializer";
 import { isRemoteTransaction } from "@shared/editor/lib/multiplayer";
 import textBetween from "@shared/editor/lib/textBetween";
@@ -686,6 +687,41 @@ export class Editor extends React.PureComponent<
     const start = $from.before($from.depth);
     const end = $from.after($from.depth);
     this.view.dispatch(this.view.state.tr.replaceWith(start, end, doc.content));
+  };
+
+  /**
+   * Insert markdown at the current selection, parsing it the same way as paste.
+   *
+   * @param markdown the markdown string to insert.
+   * @returns true if content was inserted.
+   */
+  public insertMarkdown = (markdown: string): boolean => {
+    const paste = this.pasteParser.parse(
+      normalizePastedMarkdown(markdown.trim())
+    );
+    if (!paste) {
+      return false;
+    }
+
+    const slice = paste.slice(0);
+    const tr = this.view.state.tr;
+    const singleNode =
+      slice.openStart === 0 &&
+      slice.openEnd === 0 &&
+      slice.content.childCount === 1
+        ? slice.content.firstChild
+        : null;
+
+    if (singleNode?.type === this.schema.nodes.paragraph) {
+      tr.replaceSelection(new Slice(singleNode.content, 0, 0));
+    } else if (singleNode) {
+      tr.replaceSelectionWith(singleNode);
+    } else {
+      tr.replaceSelection(slice);
+    }
+
+    this.view.dispatch(tr.scrollIntoView());
+    return true;
   };
 
   /**
