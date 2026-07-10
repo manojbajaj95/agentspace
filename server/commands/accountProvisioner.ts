@@ -282,7 +282,16 @@ async function accountProvisioner(
   };
 }
 
-async function provisionFirstCollection(
+/**
+ * Creates the default Welcome collection and onboarding documents for a newly
+ * provisioned workspace.
+ *
+ * @param ctx the API context for the acting user.
+ * @param team the team to provision content for.
+ * @param user the user that owns the created collection and documents.
+ * @returns a promise that resolves when onboarding content is created.
+ */
+export async function provisionFirstCollection(
   ctx: APIContext,
   team: Team,
   user: User
@@ -309,7 +318,7 @@ async function provisionFirstCollection(
       "Integrations & API",
       "Our Editor",
       "Getting Started",
-      "What is Outline",
+      "What is AgentSpace",
     ];
 
     for (const title of onboardingDocs) {

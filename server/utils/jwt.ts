@@ -1,9 +1,12 @@
+import crypto from "node:crypto";
 import { subMinutes } from "date-fns";
 import JWT from "jsonwebtoken";
 import type { FindOptions } from "sequelize";
+import env from "@server/env";
 import { Team, User } from "@server/models";
 import { AuthenticationError, UserSuspendedError } from "../errors";
 import type { Context } from "koa";
+import Redis from "@server/storage/redis";
 
 /**
  * Decodes a JWT token and returns its payload without verifying the
@@ -145,6 +148,88 @@ export async function getUserForEmailSigninToken(
   }
 
   return user;
+}
+
+/**
+ * Creates a short-lived token used to bootstrap the first workspace via email
+ * magic link on a self-hosted installation with no teams yet.
+ *
+ * @param ctx the Koa context of the current request.
+ * @param email the email address requesting signup.
+ * @returns a signed email signup token.
+ */
+export function signEmailSignupToken(ctx: Context, email: string): string {
+  const jti = crypto.randomBytes(16).toString("hex");
+
+  return JWT.sign(
+    {
+      email: email.toLowerCase(),
+      ip: ctx.request.ip,
+      createdAt: new Date().toISOString(),
+      type: "email-signup",
+      jti,
+    },
+    env.SECRET_KEY
+  );
+}
+
+/**
+ * Validates an email signup token and returns the email address to provision.
+ * Tokens are single-use and bound to the requesting IP address.
+ *
+ * @param ctx the Koa context of the current request.
+ * @param token the email signup token to validate.
+ * @returns the email address associated with the token.
+ * @throws AuthenticationError if the token is invalid, expired, reused, or from a different IP.
+ */
+export async function getEmailForSignupToken(
+  ctx: Context,
+  token: string
+): Promise<string> {
+  const payload = getJWTPayload(token);
+
+  if (payload.type !== "email-signup") {
+    throw AuthenticationError("Invalid token");
+  }
+
+  if (payload.createdAt) {
+    if (new Date(payload.createdAt) < subMinutes(new Date(), 10)) {
+      throw AuthenticationError("Expired token");
+    }
+  }
+
+  if (payload.ip !== ctx.request.ip) {
+    throw AuthenticationError("Token mismatch");
+  }
+
+  if (typeof payload.email !== "string" || !payload.email) {
+    throw AuthenticationError("Invalid token");
+  }
+
+  if (typeof payload.jti !== "string" || !payload.jti) {
+    throw AuthenticationError("Invalid token");
+  }
+
+  try {
+    JWT.verify(token, env.SECRET_KEY);
+  } catch (_err) {
+    throw AuthenticationError("Invalid token");
+  }
+
+  const redisKey = `email_signup_token:${payload.jti}`;
+  // Atomically claim the token so concurrent callbacks cannot both succeed.
+  const claimed = await Redis.defaultClient.set(
+    redisKey,
+    "1",
+    "EX",
+    15 * 60,
+    "NX"
+  );
+  if (claimed !== "OK") {
+    throw AuthenticationError("Token has already been used");
+  }
+
+  return payload.email.toLowerCase();
 }
 
 /**

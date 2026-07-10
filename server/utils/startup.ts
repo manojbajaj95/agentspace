@@ -78,7 +78,7 @@ export async function checkDataMigrations() {
   ) {
     Logger.fatal(
       `
-This version of Outline cannot start until a data migration is complete.
+This version of ${env.APP_NAME} cannot start until a data migration is complete.
 Backup your database, run the database migrations and the following script:
 (Note: script run needed only when upgrading to any version between 0.54.0 and 0.61.1, including both)
 
@@ -99,16 +99,16 @@ export async function printEnv() {
       styleText(
         "green",
         `
-Is your team enjoying Outline? Consider supporting future development by sponsoring the project:\n\nhttps://github.com/sponsors/outline
+Is your team enjoying ${env.APP_NAME}?
 `
       )
     );
   } else if (env.isDevelopment) {
     Logger.warn(
-      `Running Outline in ${styleText(
+      `Running ${env.APP_NAME} in ${styleText(
         "bold",
         "development mode"
-      )}. To run Outline in production mode set the ${styleText(
+      )}. To run ${env.APP_NAME} in production mode set the ${styleText(
         "bold",
         "NODE_ENV"
       )} env variable to "production"`

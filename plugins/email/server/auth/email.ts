@@ -1,7 +1,11 @@
 import Router from "koa-router";
 import { errToString } from "@shared/utils/error";
-import { Client, NotificationEventType } from "@shared/types";
+import { Client, NotificationEventType, UserRole } from "@shared/types";
 import { parseDomain } from "@shared/utils/domains";
+import slugify from "@shared/utils/slugify";
+import { provisionFirstCollection } from "@server/commands/accountProvisioner";
+import teamCreator from "@server/commands/teamCreator";
+import { createContext } from "@server/context";
 import InviteAcceptedEmail from "@server/emails/templates/InviteAcceptedEmail";
 import SigninEmail from "@server/emails/templates/SigninEmail";
 import WelcomeEmail from "@server/emails/templates/WelcomeEmail";
@@ -9,18 +13,39 @@ import env from "@server/env";
 import { AuthorizationError } from "@server/errors";
 import Logger from "@server/logging/Logger";
 import { rateLimiter } from "@server/middlewares/rateLimiter";
+import { transaction } from "@server/middlewares/transaction";
 import validate from "@server/middlewares/validate";
 import { User, Team } from "@server/models";
 import type { APIContext } from "@server/types";
 import { RateLimiterStrategy } from "@server/utils/RateLimiter";
 import { VerificationCode } from "@server/utils/VerificationCode";
 import { signIn } from "@server/utils/authentication";
-import { getUserForEmailSigninToken } from "@server/utils/jwt";
+import {
+  getEmailForSignupToken,
+  getJWTPayload,
+  getUserForEmailSigninToken,
+  signEmailSignupToken,
+} from "@server/utils/jwt";
 import { getTeamFromContext } from "@server/utils/passport";
 import * as T from "./schema";
 import { CSRF } from "@shared/constants";
 
 const router = new Router();
+
+/**
+ * Returns whether this self-hosted install can bootstrap the first workspace
+ * via email magic link (no teams exist yet and email is available).
+ *
+ * @returns true when email signup bootstrap is allowed.
+ */
+async function canBootstrapWithEmail(): Promise<boolean> {
+  if (env.isCloudHosted || !env.EMAIL_ENABLED) {
+    return false;
+  }
+
+  const teamCount = await Team.count();
+  return teamCount === 0;
+}
 
 router.post(
   "email",
@@ -28,6 +53,7 @@ router.post(
   validate(T.EmailSchema),
   async (ctx: APIContext<T.EmailReq>) => {
     const { email, client, preferOTP } = ctx.input.body;
+    const normalizedEmail = email.toLowerCase();
 
     const domain = parseDomain(ctx.request.hostname);
 
@@ -44,6 +70,24 @@ router.post(
       });
     }
 
+    // Self-hosted first-run: send a signup magic link that creates the workspace.
+    // OTP is not supported for bootstrap signup; always send a magic link.
+    if (!team && (await canBootstrapWithEmail())) {
+      const token = signEmailSignupToken(ctx, normalizedEmail);
+
+      await new SigninEmail({
+        to: normalizedEmail,
+        token,
+        teamUrl: env.URL,
+        client,
+      }).schedule();
+
+      ctx.body = {
+        success: true,
+      };
+      return;
+    }
+
     if (!team?.emailSigninEnabled) {
       throw AuthorizationError();
     }
@@ -51,7 +95,7 @@ router.post(
     const user = await User.scope("withAuthentications").findOne({
       where: {
         teamId: team.id,
-        email: email.toLowerCase(),
+        email: normalizedEmail,
       },
     });
 
@@ -134,6 +178,18 @@ const emailCallback = async (ctx: APIContext<T.EmailCallbackReq>) => {
 
   try {
     if (token) {
+      let payloadType: string | undefined;
+      try {
+        payloadType = getJWTPayload(token as string).type;
+      } catch {
+        payloadType = undefined;
+      }
+
+      if (payloadType === "email-signup") {
+        await completeEmailSignup(ctx, token as string, client);
+        return;
+      }
+
       user = await getUserForEmailSigninToken(ctx, token as string);
     } else if (code && email) {
       const team = await getTeamFromContext(ctx);
@@ -212,6 +268,71 @@ const emailCallback = async (ctx: APIContext<T.EmailCallbackReq>) => {
     client,
   });
 };
+
+/**
+ * Completes first-run workspace bootstrap from an email signup magic link.
+ *
+ * @param ctx the API context for the callback request.
+ * @param token the email-signup JWT.
+ * @param client the client initiating sign-in.
+ */
+async function completeEmailSignup(
+  ctx: APIContext,
+  token: string,
+  client: Client
+) {
+  if (!(await canBootstrapWithEmail())) {
+    ctx.redirect(
+      "/?notice=auth-error&description=Installation%20already%20configured"
+    );
+    return;
+  }
+
+  const email = await getEmailForSignupToken(ctx, token);
+  const localPart = email.split("@")[0] || "admin";
+  const teamName = env.APP_NAME || "Wiki";
+
+  const team = await teamCreator(ctx, {
+    name: teamName,
+    subdomain: slugify(localPart),
+    authenticationProviders: [],
+  });
+
+  // Ensure email magic link remains available after bootstrap.
+  if (!team.guestSignin) {
+    await team.update({ guestSignin: true });
+  }
+
+  const user = await User.createWithCtx(ctx, {
+    name: localPart,
+    email,
+    teamId: team.id,
+    role: UserRole.Admin,
+  });
+
+  const provisionCtx = createContext({
+    user,
+    ip: ctx.request.ip,
+    transaction: ctx.state.transaction,
+  });
+  await provisionFirstCollection(provisionCtx, team, user);
+
+  await new WelcomeEmail({
+    to: user.email,
+    language: user.language,
+    role: user.role,
+    teamUrl: team.url,
+  }).schedule();
+
+  await signIn(ctx, "email", {
+    user,
+    team,
+    isNewTeam: true,
+    isNewUser: true,
+    client,
+  });
+}
+
 router.get(
   "email.callback",
   rateLimiter(RateLimiterStrategy.FivePerMinute),
@@ -222,6 +343,7 @@ router.post(
   "email.callback",
   rateLimiter(RateLimiterStrategy.FivePerMinute),
   validate(T.EmailCallbackSchema),
+  transaction(),
   emailCallback
 );
 

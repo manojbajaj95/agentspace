@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 import SigninEmail from "@server/emails/templates/SigninEmail";
 import WelcomeEmail from "@server/emails/templates/WelcomeEmail";
-import { AuthenticationProvider } from "@server/models";
+import { AuthenticationProvider, Team } from "@server/models";
 import { buildUser, buildGuestUser, buildTeam } from "@server/test/factories";
-import { getTestServer } from "@server/test/support";
+import { getTestServer, setSelfHosted } from "@server/test/support";
 
 const server = getTestServer();
 
@@ -258,6 +258,33 @@ describe("email", () => {
       expect(body.success).toEqual(true);
       expect(spy).toHaveBeenCalled();
       spy.mockRestore();
+    });
+  });
+
+  describe("self-hosted bootstrap", () => {
+    beforeEach(setSelfHosted);
+
+    it("should send a signup magic link when no teams exist", async () => {
+      const spy = vi.spyOn(SigninEmail.prototype, "schedule");
+      const countSpy = vi.spyOn(Team, "count").mockResolvedValue(0);
+      const scopedFindOne = vi.fn().mockResolvedValue(null);
+      const scopeSpy = vi.spyOn(Team, "scope").mockReturnValue({
+        findOne: scopedFindOne,
+      } as never);
+
+      const email = faker.internet.email().toLowerCase();
+      const res = await server.post("/auth/email", {
+        body: { email },
+      });
+      const body = await res.json();
+
+      expect(res.status).toEqual(200);
+      expect(body.success).toEqual(true);
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockRestore();
+      countSpy.mockRestore();
+      scopeSpy.mockRestore();
     });
   });
 });

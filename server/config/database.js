@@ -1,3 +1,8 @@
+const useSsl =
+  typeof process.env.DATABASE_URL === "string" &&
+  (process.env.DATABASE_URL.includes("sslmode=require") ||
+    process.env.DATABASE_URL.includes("neon.tech"));
+
 const shared = {
   use_env_variable: process.env.DATABASE_URL ? "DATABASE_URL" : undefined,
   dialect: "postgres",
@@ -6,6 +11,16 @@ const shared = {
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD || undefined,
   database: process.env.DATABASE_NAME,
+  ...(useSsl
+    ? {
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
+      }
+    : {}),
 };
 
 module.exports = {

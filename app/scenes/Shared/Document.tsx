@@ -7,6 +7,7 @@ import DocumentComponent from "~/scenes/Document/components/Document";
 import Branding from "~/components/Branding";
 import { useDocumentContext } from "~/components/DocumentContext";
 import { useTeamContext } from "~/components/TeamContext";
+import env from "~/env";
 import useCurrentUser from "~/hooks/useCurrentUser";
 import useQuery from "~/hooks/useQuery";
 import useShare from "@shared/hooks/useShare";
@@ -60,7 +61,7 @@ function SharedDocument({ document }: Props) {
         readOnly
       />
       {showBranding ? (
-        <Branding href="//www.getoutline.com?ref=sharelink" />
+        <Branding href={env.URL} />
       ) : null}
     </>
   );

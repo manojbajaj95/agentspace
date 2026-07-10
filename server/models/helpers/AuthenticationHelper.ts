@@ -63,8 +63,14 @@ export default class AuthenticationHelper {
       .filter((hook) => {
         // Email sign-in is an exception as it does not have an authentication
         // provider using passport, instead it exists as a boolean option.
+        // On self-hosted installs with no team yet, allow email so the first
+        // admin can bootstrap via magic link.
         if (hook.value.id === "email") {
-          return team?.emailSigninEnabled;
+          if (!team) {
+            return !isCloudHosted && env.EMAIL_ENABLED;
+          }
+
+          return team.emailSigninEnabled;
         }
 
         // Passkeys is an exception as it does not have an authentication

@@ -8,12 +8,13 @@ import Spinner from "@shared/components/Spinner";
 import ButtonLarge from "~/components/ButtonLarge";
 import Input from "~/components/Input";
 import Text from "~/components/Text";
+import env from "~/env";
 import { DefaultHostname, navigateToHost, validateHost } from "../urls";
 
 type Status = "idle" | "checking" | "valid" | "invalid";
 
 /**
- * Dialog that allows choosing the Outline installation to connect the desktop
+ * Dialog that allows choosing the installation to connect the desktop
  * app to. The entered host is validated against its auth configuration before
  * the user is able to continue.
  */
@@ -86,7 +87,9 @@ export function SwitchHostDialog() {
   return (
     <form onSubmit={handleSubmit}>
       <Text as="p">
-        {t("Enter the address of an Outline workspace to connect")}
+        {t("Enter the address of an {{ appName }} workspace to connect", {
+          appName: env.APP_NAME,
+        })}
       </Text>
       <Input
         autoFocus

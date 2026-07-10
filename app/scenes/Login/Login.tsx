@@ -208,7 +208,8 @@ function Login({ children, onBack }: Props) {
           <Heading centered>{t("Almost there")}…</Heading>
           <Note>
             {t(
-              "Your custom domain is successfully pointing at Outline. To complete the setup process please contact support."
+              "Your custom domain is successfully pointing at {{ appName }}. To complete the setup process please contact support.",
+              { appName: env.APP_NAME }
             )}
           </Note>
         </Centered>
@@ -257,7 +258,8 @@ function Login({ children, onBack }: Props) {
     (provider) => provider.id === auth.lastSignedIn && !isCreate
   );
   const clientType = Desktop.isElectron() ? Client.Desktop : Client.Web;
-  const preferOTP = isPWA || !!forceOTP;
+  // OTP requires an existing workspace; first-run email bootstrap uses magic links only.
+  const preferOTP = (isPWA || !!forceOTP) && !!config.name;
 
   if (firstRun) {
     return (
@@ -303,11 +305,19 @@ function Login({ children, onBack }: Props) {
           ) : (
             <>
               <Note>
-                <Trans
-                  defaults="A magic sign-in link has been sent to the email <em>{{ emailLinkSentTo }}</em> if an account exists."
-                  values={{ emailLinkSentTo }}
-                  components={{ em: <em /> }}
-                />
+                {config.name ? (
+                  <Trans
+                    defaults="A magic sign-in link has been sent to the email <em>{{ emailLinkSentTo }}</em> if an account exists."
+                    values={{ emailLinkSentTo }}
+                    components={{ em: <em /> }}
+                  />
+                ) : (
+                  <Trans
+                    defaults="A magic sign-in link has been sent to the email <em>{{ emailLinkSentTo }}</em>."
+                    values={{ emailLinkSentTo }}
+                    components={{ em: <em /> }}
+                  />
+                )}
               </Note>
               <br />
             </>

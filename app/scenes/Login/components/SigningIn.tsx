@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { s } from "@shared/styles";
+import env from "~/env";
 import Heading from "~/components/Heading";
 import PageTitle from "~/components/PageTitle";
 import Text from "~/components/Text";
@@ -21,7 +22,8 @@ export function SigningIn() {
       <Heading centered>{t("Signing in")}…</Heading>
       <Note>
         {t(
-          "You can safely close this window once the Outline desktop app has opened"
+          "You can safely close this window once the {{ appName }} desktop app has opened",
+          { appName: env.APP_NAME }
         )}
         .
       </Note>

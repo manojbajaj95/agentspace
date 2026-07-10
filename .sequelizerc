@@ -1,11 +1,26 @@
-require("@dotenvx/dotenvx").config({
-  path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
-});
+const fs = require("fs");
+const path = require("path");
+const dotenv = require("@dotenvx/dotenvx");
 
-var path = require('path');
+const envFiles =
+  process.env.NODE_ENV === "test"
+    ? [".env.test"]
+    : [".env", ".env.development", ".env.local"];
+
+for (const file of envFiles) {
+  const resolved = path.resolve(process.cwd(), file);
+  if (fs.existsSync(resolved)) {
+    dotenv.config({
+      path: resolved,
+      override: true,
+      silent: true,
+      ignore: ["MISSING_ENV_FILE"],
+    });
+  }
+}
 
 module.exports = {
-  'config': path.resolve('server/config', 'database.js'),
-  'migrations-path': path.resolve('server', 'migrations'),
-  'models-path': path.resolve('server', 'models'),
-}
+  config: path.resolve("server/config", "database.js"),
+  "migrations-path": path.resolve("server", "migrations"),
+  "models-path": path.resolve("server", "models"),
+};
