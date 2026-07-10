@@ -1,5 +1,5 @@
 ARG APP_PATH=/opt/outline
-ARG BASE_IMAGE=outlinewiki/outline-base
+ARG BASE_IMAGE=manojbajaj95/darin-base
 FROM ${BASE_IMAGE} AS base
 
 ARG APP_PATH
@@ -8,7 +8,7 @@ WORKDIR $APP_PATH
 # ---
 FROM node:26.3.0-slim AS runner
 
-LABEL org.opencontainers.image.source="https://github.com/outline/outline"
+LABEL org.opencontainers.image.source="https://github.com/manojbajaj95/darin"
 
 ARG APP_PATH
 WORKDIR $APP_PATH

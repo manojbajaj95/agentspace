@@ -3,7 +3,7 @@ import { server } from "@server/test/msw";
 import { getVersionInfo, getVersion } from "./getInstallationInfo";
 
 const dockerHubUrl =
-  "https://hub.docker.com/v2/repositories/outlinewiki/outline/tags";
+  "https://hub.docker.com/v2/repositories/manojbajaj95/darin/tags";
 
 describe("getVersion", () => {
   it("should return the current version", () => {

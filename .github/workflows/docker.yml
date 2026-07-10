@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: outlinewiki/outline
-  BASE_IMAGE_NAME: outlinewiki/outline-base
+  IMAGE_NAME: manojbajaj95/darin
+  BASE_IMAGE_NAME: manojbajaj95/darin-base
 
 jobs:
   build-arm:

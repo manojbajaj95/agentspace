@@ -4,7 +4,7 @@ import Logger from "@server/logging/Logger";
 import fetch from "./fetch";
 
 const dockerhubLink =
-  "https://hub.docker.com/v2/repositories/outlinewiki/outline";
+  "https://hub.docker.com/v2/repositories/manojbajaj95/darin";
 
 function isFullReleaseVersion(versionName: string): boolean {
   const releaseRegex = /^(version-)?\d+\.\d+\.\d+$/; // Matches "N.N.N" or "version-N.N.N" for dockerhub releases before v0.56.0"
