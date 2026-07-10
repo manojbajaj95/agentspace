@@ -47,7 +47,9 @@ interface CSPOptions {
 export default function createCSPMiddleware(options?: CSPOptions) {
   // Construct scripts CSP based on options in use
   const defaultSrc: string[] = ["'self'"];
-  const scriptSrc: string[] = [];
+  // Allow lazy-loaded chunks from the document origin. Cloud-hosted teams are
+  // served from subdomains and custom domains that differ from env.URL.
+  const scriptSrc: string[] = ["'self'"];
   const styleSrc: string[] = ["'self'", "'unsafe-inline'"];
   const objectSrc: string[] = [env.URL, "'self'"];
 
@@ -85,9 +87,7 @@ export default function createCSPMiddleware(options?: CSPOptions) {
     ctx.state.cspNonce = crypto.randomBytes(16).toString("hex");
 
     // Note: workerSrc is included even though it's missing from the koa-helmet
-    // type definitions — the underlying helmet supports it. The service worker
-    // is served from the same origin as the document, which may be a custom
-    // domain that is not present in scriptSrc.
+    // type definitions — the underlying helmet supports it.
     const directives = {
       baseUri: ["'none'"],
       defaultSrc,
