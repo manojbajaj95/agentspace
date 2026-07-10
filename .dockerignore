@@ -17,6 +17,9 @@ build
 docker-compose.yml
 node_modules
 .yarn
+# Local mkcert material must not ship in production images (forces HTTPS-only listen)
+server/config/certs/*
+!server/config/certs/.gitkeep
 **/*.test.ts
 **/*.test.tsx
 **/*.test.js
